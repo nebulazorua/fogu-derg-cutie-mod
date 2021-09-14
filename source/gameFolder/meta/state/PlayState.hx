@@ -57,8 +57,7 @@ class PlayState extends MusicBeatState
 	public static var boyfriend:Boyfriend;
 
 	public var boyfriendAutoplay:Bool = false;
-
-	private var dadAutoplay:Bool = true; // this is for testing purposes
+	private var dadAutoplay:Bool = false; // this is for testing purposes
 
 	public static var assetModifier:String = 'base';
 	public static var changeableSkin:String = 'default';
@@ -196,20 +195,23 @@ class PlayState extends MusicBeatState
 		stageBuild = new Stage(curStage);
 		add(stageBuild);
 
+		boyfriendAutoplay = Init.trueSettings.get("Play Opponent");
+		dadAutoplay = !Init.trueSettings.get("Play Opponent");
+
 		/*
 			Everything related to the stages aside from things done after are set in the stage class!
 			this means that the girlfriend's type, boyfriend's position, dad's position, are all there
 
 			It serves to clear clutter and can easily be destroyed later. The problem is,
 			I don't actually know if this is optimised, I just kinda roll with things and hope
-			they work. I'm not actually really experienced compared to a lot of other developers in the scene, 
-			so I don't really know what I'm doing, I'm just hoping I can make a better and more optimised 
+			they work. I'm not actually really experienced compared to a lot of other developers in the scene,
+			so I don't really know what I'm doing, I'm just hoping I can make a better and more optimised
 			engine for both myself and other modders to use!
 		 */
 
 		// set up characters here too
 		gf = new Character(400, 130, stageBuild.returnGFtype(curStage));
-		gf.scrollFactor.set(0.95, 0.95);
+		gf.scrollFactor.set(1, 1);
 
 		dadOpponent = new Character(100, 100, SONG.player2);
 		boyfriend = new Boyfriend(770, 450, SONG.player1);
@@ -233,14 +235,18 @@ class PlayState extends MusicBeatState
 		stageBuild.repositionPlayers(curStage, boyfriend, dadOpponent, gf);
 
 		// add characters
-		add(gf);
+		if(dadOpponent.curCharacter!='derg')
+			add(gf);
 
 		// add limo cus dumb layering
 		if (curStage == 'highway')
 			add(stageBuild.limo);
 
 		add(dadOpponent);
+		if(dadOpponent.curCharacter=='derg')
+			add(gf);
 		add(boyfriend);
+
 
 		// force them to dance
 		dadOpponent.dance();
@@ -376,8 +382,12 @@ class PlayState extends MusicBeatState
 					Main.switchState(this, new OriginalChartingState());
 			}
 
-			if (FlxG.keys.justPressed.SIX)
-				boyfriendAutoplay = !boyfriendAutoplay;
+			if (FlxG.keys.justPressed.SIX){
+				if (Init.trueSettings.get('Play Opponent'))
+					dadAutoplay = !dadAutoplay;
+				else
+					boyfriendAutoplay = !boyfriendAutoplay;
+			}
 		}
 
 		///*
@@ -502,7 +512,7 @@ class PlayState extends MusicBeatState
 				}
 		}*/
 
-		if (health <= 0 && startedCountdown)
+		if (health <= 0 && startedCountdown && SONG.song.toLowerCase()!='by-your-side' )
 		{
 			// startTimer.active = false;
 			persistentUpdate = false;
@@ -536,7 +546,12 @@ class PlayState extends MusicBeatState
 
 		if (animationsPlay[0] != null && (animationsPlay[0].strumTime - Conductor.songPosition) <= 0)
 		{
-			characterPlayAnimation(animationsPlay[0], dadOpponent);
+			if(Init.trueSettings.get('Play Opponent')){
+				characterPlayAnimation(animationsPlay[0], boyfriend);
+			}else{
+				characterPlayAnimation(animationsPlay[0], dadOpponent);
+			}
+
 			animationsPlay.splice(animationsPlay.indexOf(animationsPlay[0]), 1);
 		}
 
@@ -550,7 +565,7 @@ class PlayState extends MusicBeatState
 	{
 		// call character type for later I'm so sorry this is painful
 		var charCallType:Int = 0;
-		if (char == boyfriend)
+		if (Init.trueSettings.get('Play Opponent') && char==dadOpponent || !Init.trueSettings.get('Play Opponent') && char == boyfriend)
 			charCallType = 1;
 
 		// uh if condition from the original game
@@ -595,16 +610,6 @@ class PlayState extends MusicBeatState
 			// check if the note was a good hit
 			if (daNote.strumTime <= Conductor.songPosition)
 			{
-				// use a switch thing cus it feels right idk lol
-				// make sure the strum is played for the autoplay stuffs
-				/*
-					charStrum.forEach(function(cStrum:UIStaticArrow)
-					{
-						strumCallsAuto(cStrum, 0, daNote);
-					});
-				 */
-
-				// kill the note, then remove it from the array
 				var canDisplayRating = false;
 				if (charCallType == 1)
 				{
@@ -719,8 +724,14 @@ class PlayState extends MusicBeatState
 		for (i in 0...splashNotes.length)
 		{
 			// splash note positions
-			splashNotes.members[i].x = strumLineNotes.members[i + 4 - staticDisplace].x - 48;
-			splashNotes.members[i].y = strumLineNotes.members[i + 4 - staticDisplace].y - 56;
+			if(Init.trueSettings.get("Play Opponent")){
+				splashNotes.members[i].x = strumLineNotes.members[i - staticDisplace].x - 48;
+				splashNotes.members[i].y = strumLineNotes.members[i - staticDisplace].y - 56;
+			}else{
+				splashNotes.members[i].x = strumLineNotes.members[i + 4 - staticDisplace].x - 48;
+				splashNotes.members[i].y = strumLineNotes.members[i + 4 - staticDisplace].y - 56;
+			}
+
 		}
 
 		// reset strums
@@ -742,8 +753,12 @@ class PlayState extends MusicBeatState
 		if (generatedMusic)
 		{
 			// nested script #1
-			controlPlayer(boyfriend, boyfriendAutoplay, boyfriendStrums, holdControls, pressControls, releaseControls);
-			// controlPlayer(dadOpponent, dadAutoplay, dadStrums, holdControls, pressControls, releaseControls, false);
+			if(Init.trueSettings.get("Play Opponent")){
+				controlPlayer(dadOpponent, dadAutoplay, dadStrums, holdControls, pressControls, releaseControls);
+			}else{
+				controlPlayer(boyfriend, boyfriendAutoplay, boyfriendStrums, holdControls, pressControls, releaseControls);
+			}
+			//
 
 			notesPressedAutoplay = [];
 			// call every single note that exists!
@@ -755,9 +770,13 @@ class PlayState extends MusicBeatState
 				// lord forgive me for what I'm about to do but I can't use booleans as integers
 
 				// don't follow this it's hellaaaa stupid code
-				var otherSide = 0;
-				if (daNote.mustPress)
-					otherSide = 1;
+				var otherSide = Init.trueSettings.get("Play Opponent")?1:0;
+				if (daNote.mustPress){
+					otherSide = Init.trueSettings.get("Play Opponent")?0:1;
+
+				}
+
+
 				var noteSkin:String = Init.trueSettings.get("Note Skin");
 
 				// set the notes x and y
@@ -809,10 +828,18 @@ class PlayState extends MusicBeatState
 				// hell breaks loose here, we're using nested scripts!
 				// get the note lane and run the corresponding script
 				///*
-				if (daNote.mustPress)
-					mainControls(daNote, boyfriend, boyfriendStrums, boyfriendAutoplay, otherSide);
-				else
-					mainControls(daNote, dadOpponent, dadStrums, dadAutoplay); // dadOpponent autoplay is true by default and should be true unless neccessary
+				if(Init.trueSettings.get("Play Opponent")){
+					if (daNote.mustPress)
+						mainControls(daNote, dadOpponent, dadStrums, dadAutoplay, otherSide); // dadOpponyea ent autoplay is true by default and should be true unless neccessary
+					else
+						mainControls(daNote, boyfriend, boyfriendStrums, boyfriendAutoplay);
+				}else{
+					if (daNote.mustPress)
+						mainControls(daNote, boyfriend, boyfriendStrums, boyfriendAutoplay, otherSide);
+					else
+						mainControls(daNote, dadOpponent, dadStrums, dadAutoplay); // dadOpponent autoplay is true by default and should be true unless neccessary
+				}
+
 				// */
 
 				// check where the note is and make sure it is either active or inactive
@@ -1218,6 +1245,7 @@ class PlayState extends MusicBeatState
 			var stringDirection:String = UIStaticArrow.getArrowFromNumber(direction);
 
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+			character.isHolding=false;
 			character.playAnim('sing' + stringDirection.toUpperCase() + 'miss');
 		}
 		decreaseCombo(popMiss);
@@ -1246,11 +1274,20 @@ class PlayState extends MusicBeatState
 				altString = '';
 		}
 
+
 		stringArrow = baseString + altString;
 		// if (coolNote.foreverMods.get('string')[0] != "")
 		//	stringArrow = coolNote.noteString;
+		if(coolNote.animation.curAnim.name.startsWith("holdend")){
+			character.isHolding=false;
+		}
 
-		character.playAnim(stringArrow, true);
+		if(character.isHolding==false || character.animation.curAnim.name!=stringArrow)
+			character.playAnim(stringArrow, true);
+
+		if(coolNote.isSustainNote && !coolNote.animation.curAnim.name.startsWith("holdend") ){
+			character.isHolding=true;
+		}
 		character.holdTimer = 0;
 	}
 
@@ -1368,10 +1405,10 @@ class PlayState extends MusicBeatState
 			strumLineNotes.add(babyArrow);
 
 			// generate note splashes
-			if (player == 1)
+			if (Init.trueSettings.get('Play Opponent') && player==0 || !Init.trueSettings.get('Play Opponent') && player == 1)
 			{
 				var noteSplash:NoteSplash = ForeverAssets.generateNoteSplashes('noteSplashes', assetModifier, 'UI', i);
-				noteSplash.x += Note.swagWidth * i;
+				noteSplash.x += Note.swagWidth * i * player;
 				noteSplash.x += ((FlxG.width / 2) * player);
 				splashNotes.add(noteSplash);
 			}

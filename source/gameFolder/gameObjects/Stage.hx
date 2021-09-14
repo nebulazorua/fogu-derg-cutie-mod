@@ -392,46 +392,20 @@ class Stage extends FlxTypedGroup<FlxBasic>
 			case 'gf':
 				dad.setPosition(gf.x, gf.y);
 				gf.visible = false;
-			/*
-				if (isStoryMode)
-				{
-					camPos.x += 600;
-					tweenCamIn();
-			}*/
+			case 'derg':
+				dad.x -= 250;
+				gf.x -= 50;
+				gf.y == 25;
+				dad.y += 50;
 
-			case "spooky":
-				dad.y += 200;
-			case "monster":
-				dad.y += 100;
-			case 'monster-christmas':
-				dad.y += 130;
-			case 'dad':
-				camPos.x += 400;
-			case 'pico':
-				camPos.x += 600;
-				dad.y += 300;
-			case 'parents-christmas':
-				dad.x -= 500;
-			case 'senpai':
-				dad.x += 150;
-				dad.y += 360;
-				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
-			case 'senpai-angry':
-				dad.x += 150;
-				dad.y += 360;
-				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
-			case 'spirit':
-				dad.x -= 150;
-				dad.y += 100;
-				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
-			case 'tankman':
-				dad.x += 50;
-				dad.y += 200;
 		}
 	}
 
 	public function repositionPlayers(curStage, boyfriend:Character, dad:Character, gf:Character):Void
 	{
+		if(dad.curCharacter=='derg')
+			boyfriend.x += 50;
+
 		// REPOSITIONING PER STAGE
 		switch (curStage)
 		{

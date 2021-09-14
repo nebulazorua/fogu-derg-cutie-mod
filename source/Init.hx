@@ -39,6 +39,12 @@ class Init extends FlxState
 			'Whether to have the strumline vertically flipped in gameplay.',
 			NOT_FORCED
 		],
+		'Play Opponent' => [
+			false,
+			0,
+			'Whether you play the opponent\'s side rather than boyfriend\'s side.',
+			NOT_FORCED
+		],
 		'Auto Pause' => [true, 0, '', NOT_FORCED],
 		'FPS Counter' => [true, 0, 'Whether to display the FPS counter.', NOT_FORCED],
 		'Memory Counter' => [

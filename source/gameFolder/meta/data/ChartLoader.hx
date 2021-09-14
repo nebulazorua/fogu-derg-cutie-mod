@@ -12,7 +12,7 @@ import gameFolder.meta.state.PlayState;
 import gameFolder.meta.state.charting.ChartingState;
 
 /**
-	This is the chartloader class. it loads in charts, but also exports charts, the chart parameters are based on the type of chart, 
+	This is the chartloader class. it loads in charts, but also exports charts, the chart parameters are based on the type of chart,
 	say the base game type loads the base game's charts, the forever chart type loads a custom forever structure chart with custom features,
 	and so on. This class will handle both saving and loading of charts with useful features and scripts that will make things much easier
 	to handle and load, as well as much more modular!
@@ -53,7 +53,7 @@ class ChartLoader
 						/*
 							rest of this code will be mostly unmodified, I don't want to interfere with how FNF chart loading works
 							I'll keep all of the extra features in forever charts, which you'll be able to convert and export to very easily using
-							the in engine editor 
+							the in engine editor
 
 							I'll be doing my best to comment the work below but keep in mind I didn't originally write it
 						 */
@@ -64,6 +64,9 @@ class ChartLoader
 						// if the note is on the other side, flip the base section of the note
 						if (songNotes[1] > 3)
 							gottaHitNote = !section.mustHitSection;
+
+						if(Init.trueSettings.get("Play Opponent"))
+							gottaHitNote = !gottaHitNote;
 
 						// define the note that comes before (previous note)
 						var oldNote:Note;
@@ -113,7 +116,7 @@ class ChartLoader
 			/*
 				This is basically the end of this section, of course, it loops through all of the notes it has to,
 				But any optimisations and such like the ones sammu is working on won't be handled here, I want to keep this code as
-				close to the original as possible with a few tweaks and optimisations because I want to go for the abilities to 
+				close to the original as possible with a few tweaks and optimisations because I want to go for the abilities to
 				load charts from the base game, export charts to the base game, and generally handle everything with an accuracy similar to that
 				of the main game so it feels like loading things in works well.
 			 */

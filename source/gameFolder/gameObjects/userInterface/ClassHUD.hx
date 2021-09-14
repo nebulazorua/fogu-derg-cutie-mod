@@ -60,7 +60,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, Init.trueSettings.get("Play Opponent")?LEFT_TO_RIGHT:RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
 		healthBar.scrollFactor.set();
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		// healthBar
@@ -94,7 +94,12 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	override public function update(elapsed:Float)
 	{
 		// pain, this is like the 7th attempt
+
 		healthBar.percent = (PlayState.health * 50);
+		var percent= healthBar.percent;
+		if(Init.trueSettings.get("Play Opponent"))
+			percent=100-percent;
+
 
 		updateScoreText();
 
@@ -107,15 +112,15 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 		var iconOffset:Int = 26;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
-		if (healthBar.percent < 20)
+		if (percent < 20)
 			iconP1.animation.curAnim.curFrame = 1;
 		else
 			iconP1.animation.curAnim.curFrame = 0;
 
-		if (healthBar.percent > 80)
+		if (percent > 80)
 			iconP2.animation.curAnim.curFrame = 1;
 		else
 			iconP2.animation.curAnim.curFrame = 0;
