@@ -29,6 +29,7 @@ class Boyfriend extends Character
 
 			if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
 			{
+				isHolding=false;
 				playAnim('idle', true, false, 10);
 			}
 

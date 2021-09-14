@@ -96,7 +96,7 @@ class Character extends FNFSprite
 
 				playAnim('idle');
 
-				flipX = true;
+				//flipX = true;
 			case 'bf-dead':
 				frames = Paths.getSparrowAtlas('characters/BF_DEATH');
 
@@ -106,7 +106,7 @@ class Character extends FNFSprite
 
 				playAnim('firstDeath');
 
-				flipX = true;
+				//flipX = true;
 			default:
 				// set up animations if they aren't already
 
@@ -152,18 +152,6 @@ class Character extends FNFSprite
 		}
 
 		dance();
-
-		if (isPlayer) // fuck you ninjamuffin lmao
-		{
-			flipX = !flipX;
-
-			// Doesn't flip for BF, since his are already in the right place???
-			if (!curCharacter.startsWith('bf'))
-				flipLeftRight();
-			//
-		}
-		else if (curCharacter.startsWith('bf'))
-			flipLeftRight();
 	}
 
 	function flipLeftRight():Void
@@ -189,7 +177,7 @@ class Character extends FNFSprite
 
 	override function update(elapsed:Float)
 	{
-		if (!curCharacter.startsWith('bf'))
+		if (!isPlayer)
 		{
 			if (animation.curAnim.name.startsWith('sing'))
 			{
@@ -199,6 +187,7 @@ class Character extends FNFSprite
 			var dadVar:Float = 4;
 			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
 			{
+				isHolding=false;
 				dance();
 				holdTimer = 0;
 			}

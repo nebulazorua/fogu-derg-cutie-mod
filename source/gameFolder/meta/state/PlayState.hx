@@ -54,7 +54,7 @@ class PlayState extends MusicBeatState
 
 	public static var dadOpponent:Character;
 	public static var gf:Character;
-	public static var boyfriend:Boyfriend;
+	public static var boyfriend:Character;
 
 	public var boyfriendAutoplay:Bool = false;
 	private var dadAutoplay:Bool = false; // this is for testing purposes
@@ -213,8 +213,13 @@ class PlayState extends MusicBeatState
 		gf = new Character(400, 130, stageBuild.returnGFtype(curStage));
 		gf.scrollFactor.set(1, 1);
 
-		dadOpponent = new Character(100, 100, SONG.player2);
-		boyfriend = new Boyfriend(770, 450, SONG.player1);
+		if(Init.trueSettings.get("Play Opponent")){
+			dadOpponent = new Boyfriend(100, 100, SONG.player2);
+			boyfriend = new Character(770, 450, SONG.player1);
+		}else{
+			dadOpponent = new Character(100, 100, SONG.player2);
+			boyfriend = new Boyfriend(770, 450, SONG.player1);
+		}
 
 		var camPos:FlxPoint = new FlxPoint(gf.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
 
@@ -969,6 +974,7 @@ class PlayState extends MusicBeatState
 		if ((character != null && character.animation != null)
 			&& (character.holdTimer > Conductor.stepCrochet * (4 / 1000) && (!holdControls.contains(true) || autoplay)))
 		{
+			character.isHolding=false;
 			if (character.animation.curAnim.name.startsWith('sing') && !character.animation.curAnim.name.endsWith('miss'))
 				character.dance();
 		}
@@ -1246,7 +1252,11 @@ class PlayState extends MusicBeatState
 
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			character.isHolding=false;
-			character.playAnim('sing' + stringDirection.toUpperCase() + 'miss');
+			if(character.animation.getByName('sing${stringDirection.toUpperCase()}miss')!=null){
+				character.playAnim('sing${stringDirection.toUpperCase()}miss');
+			}else{
+				character.playAnim('sing${stringDirection.toUpperCase()}');
+			}
 		}
 		decreaseCombo(popMiss);
 
