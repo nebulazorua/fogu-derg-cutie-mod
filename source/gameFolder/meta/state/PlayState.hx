@@ -1288,16 +1288,14 @@ class PlayState extends MusicBeatState
 		stringArrow = baseString + altString;
 		// if (coolNote.foreverMods.get('string')[0] != "")
 		//	stringArrow = coolNote.noteString;
-		if(coolNote.animation.curAnim.name.startsWith("holdend")){
+		if(coolNote.animation.curAnim.name.endsWith("holdend")){
 			character.isHolding=false;
-		}
-
-		if(character.isHolding==false || character.animation.curAnim.name!=stringArrow)
-			character.playAnim(stringArrow, true);
-
-		if(coolNote.isSustainNote && !coolNote.animation.curAnim.name.startsWith("holdend") ){
+		}else	if(coolNote.isSustainNote && !coolNote.animation.curAnim.name.endsWith("holdend") && character.isHolding==false ){
 			character.isHolding=true;
 		}
+
+		character.playAnim(stringArrow, true);
+
 		character.holdTimer = 0;
 	}
 

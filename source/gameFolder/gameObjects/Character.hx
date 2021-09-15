@@ -213,8 +213,9 @@ class Character extends FNFSprite
 		}
 
 		super.update(elapsed);
-		if(isHolding)
+		if(isHolding){
 			animation.curAnim.curFrame=0;
+		}
 	}
 
 	private var danced:Bool = false;
