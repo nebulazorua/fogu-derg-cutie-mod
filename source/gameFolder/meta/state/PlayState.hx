@@ -324,11 +324,17 @@ class PlayState extends MusicBeatState
 		startingSong = true;
 		startedCountdown = true;
 
-		for (i in 0...2)
-			if (i != 0 || !Init.trueSettings.get('Centered Notefield'))
-				generateStaticArrows(i);
+		if(Init.trueSettings.get('Play Opponent')){
+			for (i in 0...2)
+				if (i != 1 || !Init.trueSettings.get('Centered Notefield'))
+					generateStaticArrows(i);
+		}else{
+			for (i in 0...2)
+				if (i != 0 || !Init.trueSettings.get('Centered Notefield'))
+					generateStaticArrows(i);
+		}
 
-		if (Init.trueSettings.get('Centered Notefield') && !Init.trueSettings.get('Play Opponent')) 
+		if (Init.trueSettings.get('Centered Notefield') && !Init.trueSettings.get('Play Opponent'))
 			staticDisplace = 4;
 
 		uiHUD = new ClassHUD();
@@ -642,9 +648,18 @@ class PlayState extends MusicBeatState
 		switch (charCallType)
 		{
 			case 1:
-				strumCameraRoll(boyfriendStrums, true);
+				if(Init.trueSettings.get("Play Opponent")){
+					strumCameraRoll(dadStrums, true);
+				}else{
+					strumCameraRoll(boyfriendStrums, true);
+				}
+
 			default:
-				strumCameraRoll(dadStrums, false);
+				if(Init.trueSettings.get("Play Opponent")){
+					strumCameraRoll(boyfriendStrums, true);
+				}else{
+					strumCameraRoll(dadStrums, true);
+				}
 		}
 	}
 
