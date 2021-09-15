@@ -328,7 +328,7 @@ class PlayState extends MusicBeatState
 			if (i != 0 || !Init.trueSettings.get('Centered Notefield'))
 				generateStaticArrows(i);
 
-		if (Init.trueSettings.get('Centered Notefield'))
+		if (Init.trueSettings.get('Centered Notefield') && !Init.trueSettings.get('Play Opponent')) 
 			staticDisplace = 4;
 
 		uiHUD = new ClassHUD();
