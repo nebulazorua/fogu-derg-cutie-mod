@@ -18,8 +18,8 @@ class Timings
 	public static var ratingsMap:Map<String, Array<Dynamic>> = [
 		"sick" => [30, 350, 100],
 		"good" => [100, 150, 50],
-		"bad" => [145, 0, -75],
-		"shit" => [180, -20, -90],
+		"bad" => [120, 0, 15],
+		"shit" => [180, -20, -75],
 		"miss" => [200, -50, -100],
 	];
 
